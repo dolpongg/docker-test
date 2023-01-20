@@ -1,9 +1,17 @@
+# 베이스 이미지 : node lts
 FROM node:lts-alpine
 
-WORKDIR /usr/src/app
+# 작업 폴더 설정
+WORKDIR /app
 
-COPY ./ ./
+# 소스코드가 바뀔 때마다 다시 복사해줌. 따라서 종속성 파일은 따로 분리해주어야 실행할 때마다 종속성을 설치하는 비효율을 막을 수 있음
+COPY package.json ./
 
+# 설치
 RUN npm install
 
+#모든 파일 복사
+COPY ./ ./
+
+# 컨테이너 올린 후 실행
 CMD ["npm", "run", "serve"]
