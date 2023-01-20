@@ -1,0 +1,113 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper
+  PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+  "https://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.ssafy.myhome.model.repo.HouseDealDAO">
+
+
+	<select id="getSido" resultType="String">
+		select distinct(sidoName) from dongcode
+	</select>
+<!-- List<String> selectGu(Connection con) throws SQLException; -->
+    <select id="getGu" resultType="String" parameterType="string">
+    	 select distinct(gugunName) from dongCode where sidoName=#{sido}
+    </select>
+
+    <!-- List<String> selectDong(Connection con, String gugun) throws SQLException;  -->
+    <select id="getDong" resultType="String" parameterType="map">
+    	select distinct(dongName) from dongcode where sidoName=#{sido} and gugunName=#{gugun};
+    </select>
+    
+<!-- List<House> selectHouse(Connection con, String sidoName, String gugunName, String dongName, int dealYear, int dealMonth, String page) throws SQLException; -->
+    <select id="selectHouse" resultMap="baseHouseMap" parameterType="map">
+        select * from (select * from housedeal where aptCode in 
+        (select aptCode from houseinfo where sidoName=#{sidoName} and gugunName=#{gugunName} and dongName=#{dongName} )) as deal inner join 
+        (select * from houseinfo where sidoName=#{sidoName} and gugunName=#{gugunName} and dongName=#{dongName}) as info using (aptCode)
+    </select>
+    
+    <!-- List<House> selectHouseDetail(Connection con, String sidoName, String gugunName, String dongName, int dealYear, int dealMonth, String APTName) throws SQLException; -->
+    <select id="selectHouseDetail" resultMap="baseHouseMap" parameterType="map">
+            select *, round(ST_Distance_Sphere(POINT(${lng},${lat}), POINT(lng, lat)), 1) AS distance from (select * from housedeal where aptCode in 
+        (select aptCode from houseinfo where sidoName=#{sidoName} and gugunName=#{gugunName} and dongName=#{dongName} )) as deal inner join 
+        (select * from houseinfo where sidoName=#{sidoName} and gugunName=#{gugunName} and dongName=#{dongName}) as info using (aptCode) where aptCode = #{aptCode}
+    </select>
+    
+    
+    <!-- int avgAmount(Connection con, int low, int high) throws SQLException; -->
+    <select id="avgAmount" resultType="int" parameterType="map">
+        <![CDATA[      
+            select round(avg(dealAmount), -3) as avg from housedeal 
+            where dealAmount >= #{low} and dealAmount <= #{high}
+        ]]>
+    </select>
+    
+    
+    <select id="avgRent" resultType="int" parameterType="map">
+        <![CDATA[      
+            select round(avg(rentMoney), 0) as avg from housedeal 
+            where rentMoney >= #{low} and rentMoney <= #{high}
+        ]]>
+    </select>
+    
+
+
+    <!-- List<House> selectHouses(Connection con, int amount, String dongCode, int buildYear) throws SQLException; -->
+    <select id="selectHouses" resultMap="baseHouseMap" parameterType="map">
+        <![CDATA[  
+            select * from (select * from housedeal where aptCode in 
+            (select aptCode from houseinfo where ST_Distance_Sphere(POINT(${lng},${lat}) ,POINT(lng, lat)) <= 20000)) as deal inner join 
+            (select *, round(ST_Distance_Sphere(POINT(${lng},${lat}), POINT(lng, lat)), 1) AS distance from houseinfo where ST_Distance_Sphere(POINT(${lng},${lat}) ,POINT(lng, lat)) <= 500) as info using (aptCode) 
+            where dealAmount >= #{dealAmount}-100 and dealAmount <= #{dealAmount}+100  and rentMoney >= #{rentMoney}-5 and rentMoney <= #{rentMoney}+5 order by distance;
+        ]]>
+    </select>
+
+	<resultMap type="house" id="baseHouseMap">
+        <id column="aptCode" property="APTCode" />
+        <result column="sidoName" property="sidoName" />
+        <result column="gugunName" property="gugunName" />
+        <result column="dongName" property="dongName" />
+        <result column="jibun" property="jibun" />
+        <result column="lat" property="lat" />
+        <result column="lng" property="lng" />
+        <result column="img" property="img" />
+        <result column="dealAmount" property="dealAmount" />
+        <result column="area" property="area" />
+        <result column="floor" property="floor" />
+        <result column="rentMoney" property="rentMoney" />
+        <result column="loan" property="loan" />
+        <result column="type" property="type" />
+        <result column="description" property="description" />
+        <result column="updated" property="updated" />
+        <result column="url" property="url" />
+        <result column="nearSubways" property="nearSubways" />
+        <result column="distance" property="distance"/>
+    </resultMap>
+    
+    
+    <resultMap type="houseInfo" id="baseHouseInfoMap">
+        <id column="aptCode" property="APTCode" />
+        <result column="sidoName" property="sidoName" />
+        <result column="gugunName" property="gugunName" />
+        <result column="dongName" property="dongName" />
+        <result column="jibun" property="jibun" />
+        <result column="lat" property="lat" />
+        <result column="lng" property="lng" />
+        <result column="img" property="img" />
+    </resultMap>
+
+    <resultMap type="houseDeal" id="baseHouseDealMap">
+        <id column="aptCode" property="APTCode" />
+        <result column="dealAmount" property="dealAmount" />
+        <result column="area" property="area" />
+        <result column="floor" property="floor" />
+        <result column="rentMoney" property="rentMoney" />
+        <result column="loan" property="loan" />
+        <result column="type" property="type" />
+        <result column="description" property="description" />
+        <result column="updated" property="updated" />
+        <result column="url" property="url" />
+        <result column="nearSubways" property="nearSubways" />
+    </resultMap>
+
+
+</mapper>

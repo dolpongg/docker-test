@@ -1,0 +1,27 @@
+
+#j-location-select {
+  display: flex;
+  margin: auto auto;
+  left: 0;
+  right: 0;
+  justify-content: center;
+  gap: 20px;
+}
+
+#j-location-select > div {
+  width: 150px;
+}
+
+#j-location-select select {
+  background-color: #ffb03b;
+  border: none;
+  color: white;
+}
+
+#j-location-select select:hover {
+  background-color: #ffa012;
+}
+
+#j-location-select select:active {
+  background-color: #ec8e00;
+}
