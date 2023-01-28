@@ -19,7 +19,7 @@ services:
   mysql:
     build: ./mysql
     restart: unless-stopped
-    container_name: app_mysql
+    container_name: test-mysql
     ports:
       - "3306:3306"
     volumes:
@@ -27,7 +27,7 @@ services:
       - ./mysql/sqls/:/docker-entrypoint-initdb.d/
     environment:
       MYSQL_ROOT_PASSWORD: root
-      MYSQL_DATABASE: myhome
+      MYSQL_DATABASE: test
       MYSQL_HOST : localhost
       MYSQL_PORT : 3306
 

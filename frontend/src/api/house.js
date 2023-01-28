@@ -4,7 +4,7 @@ import { apiInstance } from "./index.js";
 const api = apiInstance();
 
 function sidoList(success, fail) {
-  api.get(`/location`).then(success).catch(fail);
+  api.get(`/api/v1/article?id=3`).then(success).catch(fail);
 }
 
 function gugunList(params, success, fail) {

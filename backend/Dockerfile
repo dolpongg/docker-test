@@ -2,7 +2,7 @@
 FROM openjdk:8-jdk-alpine
 
 # 변수 선언
-ARG JAR_FILE=example-0.0.1-SNAPSHOT.jar
+ARG JAR_FILE=back-test.jar
 
 #실행할 jar파일을 도커 컨테이너 내부에 myboot.jar라는 이름으로 복사
 COPY ${JAR_FILE} myboot.jar
