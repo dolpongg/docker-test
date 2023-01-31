@@ -1,7 +1,10 @@
 package com.ssafy.api.service;
 
+import com.ssafy.api.request.LessonScheduleRegisterPostReq;
+import com.ssafy.api.response.LessonDetailsRes;
 import com.ssafy.api.response.LessonListGetRes;
 import com.ssafy.db.entity.lesson.Lesson;
+import com.ssafy.db.entity.lesson.OpenLesson;
 
 import java.util.List;
 import java.util.Map;
@@ -12,6 +15,9 @@ import java.util.Map;
 public interface LessonService {
     void createLesson(Map<String, Object> lessonInfo);
 
-    List<LessonListGetRes> setLessonProfileImgAndScore(List<Lesson> lessonList);
+    List<LessonListGetRes> setLessonProperty(List<Lesson> lessonList);
 
+    void createSchedule(OpenLesson requestInfo) throws Exception;
+
+    LessonDetailsRes getLessonDetails(Long lessonId);
 }
